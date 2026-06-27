@@ -388,13 +388,13 @@ class InstagramBot {
         }
       },
 
-      sendPhoto: async (photoPath, threadID) => {
+      sendPhoto: async (photoPath, threadID, opts = {}) => {
         try {
           if (config.TYPING_INDICATOR) {
             ig.sendTypingIndicator(threadID);
             await this._sleep(config.TYPING_INDICATOR_DURATION);
           }
-          return await ig.sendPhoto(threadID, photoPath, {});
+          return await ig.sendPhoto(threadID, photoPath, opts);
         } catch (error) {
           logger.error('Failed to send photo', { error: error.message, threadID });
           throw error;
