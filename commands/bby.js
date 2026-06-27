@@ -15,9 +15,12 @@ module.exports = {
   },
 
   async run({ api, event, args, logger, database }) {
+    // If no arguments, send a random idle message
     if (args.length === 0) {
       const idle = ['Bolo baby 🥺', 'hum...', 'Type bby help', 'Ki bolbe?'];
       const res = await api.sendMessage(idle[Math.floor(Math.random() * idle.length)], event.threadId);
+
+      // Store messageID so the user can reply to this idle message to start chatting
       if (res && res.messageID) {
         database.setReplyData(res.messageID, { commandName: 'bby' });
       }
@@ -28,7 +31,7 @@ module.exports = {
     const text = args.join(' ').toLowerCase();
 
     try {
-      // remove <msg>
+      // remove <msg> logic
       if (args[0] === 'remove') {
         const msg = text.replace('remove ', '');
         const res = await axios.get(`${BASE_URL}?remove=${encodeURIComponent(msg)}&senderID=${uid}`);
@@ -39,7 +42,7 @@ module.exports = {
         return sent;
       }
 
-      // list
+      // list all teaches
       if (args[0] === 'list') {
         const res = await axios.get(`${BASE_URL}?list=all`);
         const data = res.data;
@@ -53,7 +56,7 @@ module.exports = {
         return sent;
       }
 
-      // msg <msg>
+      // msg <msg> - check response for a specific message
       if (args[0] === 'msg') {
         const msg = text.replace('msg ', '');
         const res = await axios.get(`${BASE_URL}?list=${encodeURIComponent(msg)}`);
@@ -64,7 +67,7 @@ module.exports = {
         return sent;
       }
 
-      // teach <msg> - <reply>
+      // teach <msg> - <reply> - teach new responses
       if (args[0] === 'teach') {
         const parts = text.replace('teach ', '').split(/\s*-\s*/);
         if (parts.length < 2 || parts[1].length < 2) {
@@ -81,11 +84,12 @@ module.exports = {
         return sent;
       }
 
-      // regular chat
+      // regular chat path
       const res = await axios.get(`${BASE_URL}?text=${encodeURIComponent(text)}&senderID=${uid}&font=1`);
       const sent = await api.sendMessage(res.data.reply || '...', event.threadId);
 
-      // Store messageID for reply-to-continue
+      // Enable "reply-to-continue": store this message's ID so we know
+      // that future replies to it belong to the 'bby' command session.
       if (sent && sent.messageID) {
         database.setReplyData(sent.messageID, { commandName: 'bby' });
       }
@@ -97,21 +101,29 @@ module.exports = {
     }
   },
 
+  /**
+   * handleReply - New feature: Reply-to-continue chat
+   * This is called by the message event dispatcher when a user replies to a bot bby message.
+   */
   async handleReply({ api, event, logger, database }) {
     const uid  = event.senderID;
-    const text = event.body.toLowerCase();
+    const text = (event.body || '').trim().toLowerCase();
+
+    // Ignore empty replies
+    if (!text) return;
 
     try {
-      // Call the same chat endpoint for continued conversation
+      // Call the same Baby AI chat endpoint
       const res = await axios.get(`${BASE_URL}?text=${encodeURIComponent(text)}&senderID=${uid}&font=1`);
       const sent = await api.sendMessage(res.data.reply || '...', event.threadId);
 
-      // Store new messageID to allow further replies
+      // Store the new message ID so the user can keep replying to continue the chat indefinitely
       if (sent && sent.messageID) {
         database.setReplyData(sent.messageID, { commandName: 'bby' });
       }
     } catch (error) {
       logger.error('bby handleReply error', { error: error.message });
+      // Silent error or message based on preference
       return api.sendMessage('❌ Baby AI is unavailable right now.', event.threadId);
     }
   }
