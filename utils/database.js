@@ -29,7 +29,8 @@ class Database {
       spamWarnings: {},
       lastMessages: {},
       sentMessages: {},
-      processedMessages: {}
+      processedMessages: {},
+      replyHandlers: {}
     };
   }
 
@@ -46,7 +47,8 @@ class Database {
       spamWarnings: parsed.spamWarnings || {},
       lastMessages: parsed.lastMessages || {},
       sentMessages: parsed.sentMessages || {},
-      processedMessages: parsed.processedMessages || {}
+      processedMessages: parsed.processedMessages || {},
+      replyHandlers: parsed.replyHandlers || {}
     };
   }
 
@@ -508,6 +510,38 @@ class Database {
   markMessageAsProcessed(messageId) {
     this.data.processedMessages[messageId] = Date.now();
     this.cleanupProcessedMessages();
+  }
+
+  setReplyData(messageId, data) {
+    this.data.replyHandlers[messageId] = {
+      ...data,
+      timestamp: Date.now()
+    };
+    this.cleanupReplyHandlers();
+  }
+
+  getReplyData(messageId) {
+    return this.data.replyHandlers[messageId] || null;
+  }
+
+  cleanupReplyHandlers() {
+    const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+    let keys = Object.keys(this.data.replyHandlers);
+
+    // First, remove anything older than 24 hours
+    keys.forEach(key => {
+      if (this.data.replyHandlers[key].timestamp < oneDayAgo) {
+        delete this.data.replyHandlers[key];
+      }
+    });
+
+    // If still too many, remove the oldest ones to stay under limit
+    keys = Object.keys(this.data.replyHandlers);
+    if (keys.length > 500) {
+      keys.sort((a, b) => this.data.replyHandlers[a].timestamp - this.data.replyHandlers[b].timestamp);
+      const toDelete = keys.slice(0, keys.length - 500);
+      toDelete.forEach(key => delete this.data.replyHandlers[key]);
+    }
   }
 
   cleanupProcessedMessages() {
