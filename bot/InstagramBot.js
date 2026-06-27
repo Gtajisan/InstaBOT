@@ -232,7 +232,8 @@ class InstagramBot {
         attachments:    event.attachments    || [],
         isVoiceMessage: event.isVoiceMessage || false,
         isGroup:        event.isGroup        || false,
-        replyToItemId:  event.replyTo        || (event.messageReply ? (event.messageReply.messageID || event.messageReply.messageId) : null) || null
+        replyToItemId:  event.replyTo        || (event.messageReply ? (event.messageReply.messageID || event.messageReply.messageId) : null) || null,
+        messageReply:   event.messageReply   || null
       };
 
       await this.eventLoader.handleEvent('message', normalizedEvent);
@@ -350,6 +351,10 @@ class InstagramBot {
           logger.error('Failed to send message', { error: error.message, threadID });
           throw error;
         }
+      },
+
+      unsend: async (messageID, threadID) => {
+        return this.api.unsendMessage(threadID, messageID);
       },
 
       sendMessageToUser: async (text, userID) => {
