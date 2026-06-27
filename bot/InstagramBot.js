@@ -169,7 +169,7 @@ class InstagramBot {
 
       if (!event) return;
 
-      if (event.type === 'message') {
+      if (event.type === 'message' || event.type === 'message_reply') {
         this.handleMessage(event).catch(error => {
           logger.error('Error handling message', { error: error.message });
         });
@@ -232,7 +232,7 @@ class InstagramBot {
         attachments:    event.attachments    || [],
         isVoiceMessage: event.isVoiceMessage || false,
         isGroup:        event.isGroup        || false,
-        replyToItemId:  event.replyTo        || null
+        replyToItemId:  event.replyTo        || (event.messageReply ? (event.messageReply.messageID || event.messageReply.messageId) : null) || null
       };
 
       await this.eventLoader.handleEvent('message', normalizedEvent);

@@ -24,7 +24,8 @@ module.exports = {
       if (config.ANTI_INBOX && !event.isGroup) return;
 
       // Log event filter
-      if (config.LOG_EVENTS.disableAll || !config.LOG_EVENTS.message) {
+      const eventType = event.type || 'message';
+      if (config.LOG_EVENTS.disableAll || !config.LOG_EVENTS[eventType]) {
         // skip banner log
       } else {
         Banner.messageReceived(event.senderID, event.body || '');
