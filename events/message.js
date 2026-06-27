@@ -59,6 +59,57 @@ module.exports = {
         return;
       }
 
+      // Handle replies to bot messages (reply-to-continue feature)
+      if (event.replyToItemId) {
+        const replyData = database.getReplyData(event.replyToItemId);
+        if (replyData && replyData.commandName) {
+          const command = commandLoader.getCommand(replyData.commandName);
+          if (command && typeof command.handleReply === 'function') {
+            const requiredRole = command.config.role || 0;
+            let threadInfo = null;
+            if (requiredRole === 1) {
+              threadInfo = await bot.getThreadInfo(event.threadId).catch(() => null);
+            }
+            const hasPermission = await PermissionManager.hasPermission(event.senderID, requiredRole, threadInfo);
+
+            if (hasPermission) {
+              const replyApi = new Proxy(api, {
+                get(target, prop) {
+                  if (prop === 'sendMessage') {
+                    return async (text, threadID) => {
+                      try {
+                        return await target.replyToMessage(threadID, text, event.messageID);
+                      } catch (_) {
+                        return await target.sendMessage(text, threadID);
+                      }
+                    };
+                  }
+                  return target[prop];
+                }
+              });
+
+              try {
+                Banner.commandExecuted(`${command.config.name}:reply`, event.senderID, true);
+                await command.handleReply({
+                  api: replyApi,
+                  event,
+                  bot,
+                  logger,
+                  database,
+                  config,
+                  PermissionManager,
+                  ConfigManager,
+                  replyData
+                });
+                return;
+              } catch (error) {
+                logger.error(`Error in handleReply: ${command.config.name}`, { error: error.message });
+              }
+            }
+          }
+        }
+      }
+
       // Determine effective prefix
       const threadData = database.getThreadData(event.threadId);
       const prefix = threadData?.prefix || config.PREFIX;

@@ -14,10 +14,14 @@ module.exports = {
     category: 'ai'
   },
 
-  async run({ api, event, args, logger }) {
+  async run({ api, event, args, logger, database }) {
     if (args.length === 0) {
       const idle = ['Bolo baby 🥺', 'hum...', 'Type bby help', 'Ki bolbe?'];
-      return api.sendMessage(idle[Math.floor(Math.random() * idle.length)], event.threadId);
+      const res = await api.sendMessage(idle[Math.floor(Math.random() * idle.length)], event.threadId);
+      if (res && res.messageID) {
+        database.setReplyData(res.messageID, { commandName: 'bby' });
+      }
+      return res;
     }
 
     const uid  = event.senderID;
@@ -28,24 +32,36 @@ module.exports = {
       if (args[0] === 'remove') {
         const msg = text.replace('remove ', '');
         const res = await axios.get(`${BASE_URL}?remove=${encodeURIComponent(msg)}&senderID=${uid}`);
-        return api.sendMessage(res.data.message, event.threadId);
+        const sent = await api.sendMessage(res.data.message, event.threadId);
+        if (sent && sent.messageID) {
+          database.setReplyData(sent.messageID, { commandName: 'bby' });
+        }
+        return sent;
       }
 
       // list
       if (args[0] === 'list') {
         const res = await axios.get(`${BASE_URL}?list=all`);
         const data = res.data;
-        return api.sendMessage(
+        const sent = await api.sendMessage(
           `❇️ Total Teaches: ${data.length || 'N/A'}\n♻️ Total Responses: ${data.responseLength || 'N/A'}`,
           event.threadId
         );
+        if (sent && sent.messageID) {
+          database.setReplyData(sent.messageID, { commandName: 'bby' });
+        }
+        return sent;
       }
 
       // msg <msg>
       if (args[0] === 'msg') {
         const msg = text.replace('msg ', '');
         const res = await axios.get(`${BASE_URL}?list=${encodeURIComponent(msg)}`);
-        return api.sendMessage(`Message "${msg}" → ${res.data.data}`, event.threadId);
+        const sent = await api.sendMessage(`Message "${msg}" → ${res.data.data}`, event.threadId);
+        if (sent && sent.messageID) {
+          database.setReplyData(sent.messageID, { commandName: 'bby' });
+        }
+        return sent;
       }
 
       // teach <msg> - <reply>
@@ -58,15 +74,44 @@ module.exports = {
         const res = await axios.get(
           `${BASE_URL}?teach=${encodeURIComponent(question)}&reply=${encodeURIComponent(reply)}&senderID=${uid}`
         );
-        return api.sendMessage(`✅ Taught!\n${res.data.message}`, event.threadId);
+        const sent = await api.sendMessage(`✅ Taught!\n${res.data.message}`, event.threadId);
+        if (sent && sent.messageID) {
+          database.setReplyData(sent.messageID, { commandName: 'bby' });
+        }
+        return sent;
       }
 
       // regular chat
       const res = await axios.get(`${BASE_URL}?text=${encodeURIComponent(text)}&senderID=${uid}&font=1`);
-      return api.sendMessage(res.data.reply || '...', event.threadId);
+      const sent = await api.sendMessage(res.data.reply || '...', event.threadId);
+
+      // Store messageID for reply-to-continue
+      if (sent && sent.messageID) {
+        database.setReplyData(sent.messageID, { commandName: 'bby' });
+      }
+      return sent;
 
     } catch (error) {
       logger.error('bby error', { error: error.message });
+      return api.sendMessage('❌ Baby AI is unavailable right now.', event.threadId);
+    }
+  },
+
+  async handleReply({ api, event, logger, database }) {
+    const uid  = event.senderID;
+    const text = event.body.toLowerCase();
+
+    try {
+      // Call the same chat endpoint for continued conversation
+      const res = await axios.get(`${BASE_URL}?text=${encodeURIComponent(text)}&senderID=${uid}&font=1`);
+      const sent = await api.sendMessage(res.data.reply || '...', event.threadId);
+
+      // Store new messageID to allow further replies
+      if (sent && sent.messageID) {
+        database.setReplyData(sent.messageID, { commandName: 'bby' });
+      }
+    } catch (error) {
+      logger.error('bby handleReply error', { error: error.message });
       return api.sendMessage('❌ Baby AI is unavailable right now.', event.threadId);
     }
   }
