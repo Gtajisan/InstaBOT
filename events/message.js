@@ -85,6 +85,11 @@ module.exports = {
                       }
                     };
                   }
+                  if (prop === 'unsend') {
+                    return async (messageID, threadID) => {
+                      return await target.unsend(messageID, threadID || event.threadId);
+                    };
+                  }
                   return target[prop];
                 }
               });
@@ -242,6 +247,11 @@ module.exports = {
                 } catch (_) {
                   return await target.sendMessage(text, threadID);
                 }
+              };
+            }
+            if (prop === 'unsend') {
+              return async (messageID, threadID) => {
+                return await target.unsend(messageID, threadID || event.threadId);
               };
             }
             return target[prop];
