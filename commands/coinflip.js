@@ -6,7 +6,7 @@ module.exports = {
     usage: 'coinflip',
     cooldown: 2,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'game'
   },
 

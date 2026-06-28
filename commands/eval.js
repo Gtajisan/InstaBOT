@@ -7,7 +7,7 @@ module.exports = {
     usage: 'eval <code>',
     cooldown: 0,
     role: 4,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'owner'
   },
 

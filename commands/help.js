@@ -3,7 +3,7 @@ module.exports = {
     name: 'help',
     aliases: ['menu', 'commands', 'h'],
     version: '4.8',
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     description: 'Show all available commands or detailed info about one command',
     usage: 'help [command name]',
     cooldown: 3,
@@ -91,7 +91,7 @@ module.exports = {
         totalUnique++;
       }
 
-      let msg = `━━━☠️ ${config.NICK_NAME_BOT || 'NeoKEX AI'} ☠️━━━\n`;
+      let msg = `━━━☠️ ${config.NICK_NAME_BOT || 'Gtajisan AI'} ☠️━━━\n`;
       msg += `│ Prefix: ${prefix}  │  Commands: ${totalUnique}\n`;
 
       const sortedCats = Object.keys(categories).sort();

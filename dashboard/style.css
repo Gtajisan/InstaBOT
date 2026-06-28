@@ -1,0 +1,116 @@
+:root {
+    --primary-gradient: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #ffffff;
+    --bg-color: #0f0c29;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.gradient-text {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.gradient-btn {
+    background: var(--primary-gradient);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.gradient-btn:hover {
+    transform: scale(1.05);
+}
+
+.hidden { display: none; }
+
+#login-screen {
+    width: 300px;
+    text-align: center;
+}
+
+#password {
+    width: 80%;
+    padding: 10px;
+    margin: 20px 0;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    color: white;
+    border-radius: 5px;
+}
+
+#dashboard {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card h3 { margin-top: 0; font-size: 0.9rem; opacity: 0.8; }
+.card p { font-size: 1.5rem; font-weight: bold; margin: 10px 0 0 0; }
+
+.controls { margin-bottom: 20px; }
+.btn-group { display: flex; gap: 10px; }
+.logs-section {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+#log-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.3);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+}
+
+.monospace { font-family: 'Courier New', Courier, monospace; }
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    background: rgba(255,255,255,0.1);
+}
+
+.online { border: 1px solid #4caf50; color: #4caf50; }

@@ -1,6 +1,6 @@
 'use strict';
 
-const { login } = require('@neoaz07/nkxica');
+const { login } = require('@gtajisan/nkxica');
 
 const fs   = require('fs');
 const http = require('http');
@@ -19,6 +19,7 @@ class InstagramBot {
     this.userID            = null;
     this.username          = null;
     this.commandLoader     = new CommandLoader();
+    global.InstaBOT = { onReply: new Map(), onReaction: new Map(), onEvent: new Map() };
     this.eventLoader       = new EventLoader(this);
     this.reconnectAttempts = 0;
     this.shouldReconnect   = config.AUTO_RECONNECT;

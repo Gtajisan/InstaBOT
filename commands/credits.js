@@ -6,7 +6,7 @@ module.exports = {
     usage: 'credits',
     cooldown: 5,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'system'
   },
 
@@ -15,8 +15,8 @@ module.exports = {
       const creditsText =
 `InstaBOT v${config.BOT_VERSION}
 
-Created by NeoKEX
-GitHub: github.com/NeoKEX
+Created by Gtajisan
+GitHub: github.com/Gtajisan
 
 InstaBOT is a powerful, modular Instagram bot built for automation and fun. Fully open-source and crafted with care.
 

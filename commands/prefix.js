@@ -3,7 +3,7 @@ module.exports = {
     name: 'prefix',
     aliases: ['setprefix', 'changeprefix'],
     version: '1.0.0',
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     role: 0,
     cooldown: 5,
     category: 'config',

@@ -40,6 +40,9 @@ class CommandLoader {
         }
 
         this.commands.set(commandModule.config.name, commandModule);
+        if (commandModule.onReply) global.InstaBOT.onReply.set(commandModule.config.name, commandModule.onReply);
+        if (commandModule.onReaction) global.InstaBOT.onReaction.set(commandModule.config.name, commandModule.onReaction);
+        if (commandModule.onEvent) global.InstaBOT.onEvent.set(commandModule.config.name, commandModule.onEvent);
         
         if (commandModule.config.aliases) {
           commandModule.config.aliases.forEach(alias => {

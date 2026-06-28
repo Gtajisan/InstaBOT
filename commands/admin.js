@@ -6,7 +6,7 @@ module.exports = {
     usage: 'admin [add|remove|list] [user_id]',
     cooldown: 5,
     role: 2,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'admin'
   },
 

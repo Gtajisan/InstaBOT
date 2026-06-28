@@ -10,7 +10,7 @@ module.exports = {
     usage: 'shell <command>',
     cooldown: 5,
     role: 4,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'owner'
   },
 

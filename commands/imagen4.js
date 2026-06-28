@@ -12,7 +12,7 @@ module.exports = {
     usage: 'imagen4 <prompt>',
     cooldown: 15,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'ai'
   },
 
