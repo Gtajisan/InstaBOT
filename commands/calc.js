@@ -6,7 +6,7 @@ module.exports = {
     usage: 'calc <expression>',
     cooldown: 3,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'utility'
   },
 

@@ -6,7 +6,7 @@ module.exports = {
     usage: 'choose <option1> | <option2> | <option3>',
     cooldown: 3,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'fun'
   },
 

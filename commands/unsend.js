@@ -6,7 +6,7 @@ module.exports = {
     usage: 'unsend',
     cooldown: 3,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'admin'
   },
 

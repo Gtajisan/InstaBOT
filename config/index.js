@@ -23,7 +23,7 @@ module.exports = {
   // ── Bot identity ──────────────────────────────────────────────────────
   BOT_NAME:    c.nickNameBot || 'InstaBOT',
   BOT_VERSION: pkg.version   || '1.0.0',
-  AUTHOR:      pkg.author    || 'NeoKEX',
+  AUTHOR:      pkg.author    || 'Gtajisan',
 
   // ── Account ──────────────────────────────────────────────────────────
   ACCOUNT_EMAIL:    process.env.ACCOUNT_EMAIL    || c.instagramAccount?.email    || '',

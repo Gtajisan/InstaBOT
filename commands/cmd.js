@@ -95,7 +95,7 @@ module.exports = {
   config: {
     name: 'cmd',
     version: '1.0',
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     description: 'Manage bot command files — load, unload, reload, install',
     usage: 'cmd <load|loadAll|unload|install> [args]',
     cooldown: 5,

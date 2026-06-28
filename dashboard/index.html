@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoatBot Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div id="login-screen" class="glass">
+        <h1 class="gradient-text">GoatBot Login</h1>
+        <input type="password" id="password" placeholder="Enter Password">
+        <button id="login-btn" class="gradient-btn">Login</button>
+    </div>
+
+    <div id="dashboard" class="hidden">
+        <header class="glass">
+            <h1 class="gradient-text">GoatBot Dashboard</h1>
+            <div id="status-badges">
+                <span id="uptime-badge" class="badge">Uptime: 00:00:00</span>
+                <span id="status-badge" class="badge online">Online</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="stats-grid">
+                <div class="card glass">
+                    <h3>Messages</h3>
+                    <p id="stat-messages">0</p>
+                </div>
+                <div class="card glass">
+                    <h3>Commands</h3>
+                    <p id="stat-commands">0</p>
+                </div>
+                <div class="card glass">
+                    <h3>Errors</h3>
+                    <p id="stat-errors">0</p>
+                </div>
+                <div class="card glass">
+                    <h3>Active Threads</h3>
+                    <p id="stat-threads">0</p>
+                </div>
+            </div>
+
+            <div class="logs-section glass">
+                <h3>Live Logs</h3>
+                <div id="log-container" class="monospace"></div>
+            </div>
+        <div class="controls glass">
+            <h3>Bot Controls</h3>
+            <div class="btn-group">
+                <button id="reload-cmds-btn" class="gradient-btn">Reload Commands</button>
+                <button id="reload-events-btn" class="gradient-btn">Reload Events</button>
+                <button id="restart-mqtt-btn" class="gradient-btn">Restart MQTT</button>
+            </div>
+        </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

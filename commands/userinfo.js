@@ -6,7 +6,7 @@ module.exports = {
     usage: 'userinfo <username or UID>',
     cooldown: 10,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'utility'
   },
 

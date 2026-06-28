@@ -8,7 +8,7 @@ module.exports = {
     usage: 'ai <question>',
     cooldown: 10,
     role: 0,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'ai'
   },
 

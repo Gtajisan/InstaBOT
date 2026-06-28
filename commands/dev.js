@@ -6,7 +6,7 @@ module.exports = {
     usage: 'dev',
     cooldown: 0,
     role: 4,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'system'
   },
 

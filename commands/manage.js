@@ -6,7 +6,7 @@ module.exports = {
     usage: 'manage <add|remove|list> [trigger] [response]',
     cooldown: 5,
     role: 2,
-    author: 'NeoKEX',
+    author: 'Gtajisan',
     category: 'admin'
   },
 

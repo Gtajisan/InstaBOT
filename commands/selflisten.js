@@ -1,4 +1,4 @@
-const { login } = require('@neoaz07/nkxica');
+const { login } = require('@gtajisan/nkxica');
 const setOptions = login.setOptions;
 
 module.exports = {
