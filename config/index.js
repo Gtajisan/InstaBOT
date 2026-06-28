@@ -21,7 +21,7 @@ const pkg = (() => {
 
 module.exports = {
   // ── Bot identity ──────────────────────────────────────────────────────
-  BOT_NAME:    c.nickNameBot || 'InstaBOT',
+  BOT_NAME:    c.nickNameBot || 'GoatBot-IG',
   BOT_VERSION: pkg.version   || '1.0.0',
   AUTHOR:      pkg.author    || 'Gtajisan',
 
@@ -37,8 +37,8 @@ module.exports = {
   // ── General ───────────────────────────────────────────────────────────
   ANTI_INBOX:   c.antiInbox   ?? false,
   LANGUAGE:     c.language    || 'en',
-  NICK_NAME_BOT: c.nickNameBot || 'Bot',
-  PREFIX:       process.env.PREFIX || c.prefix || '~',
+  NICK_NAME_BOT: c.nickNameBot || 'GoatBot-IG',
+  PREFIX:       process.env.PREFIX || c.prefix || '!',
   NO_PREFIX:    c.noPrefix ?? true,
 
   // ── Admin-only mode ───────────────────────────────────────────────────
@@ -46,7 +46,6 @@ module.exports = {
   ADMIN_ONLY_IGNORE_COMMANDS: c.adminOnly?.ignoreCommand || [],
 
   // ── Roles ─────────────────────────────────────────────────────────────
-  // Role 0 = all users, 1 = unused/alias, 2 = adminBot, 3 = premiumUsers, 4 = devUsers
   ADMIN_BOT:     c.adminBot     || [],
   PREMIUM_USERS: c.premiumUsers || [],
   DEV_USERS:     c.devUsers     || [],
@@ -76,6 +75,7 @@ module.exports = {
   DASHBOARD_ENABLE:      c.dashBoard?.enable ?? false,
   DASHBOARD_EXPIRE_CODE: c.dashBoard?.expireVerifyCode ?? 300000,
   DASHBOARD_PORT:        c.dashBoard?.port ?? 5000,
+  DASHBOARD_PASSWORD:    process.env.DASHBOARD_PASSWORD || c.dashBoard?.password || 'admin123',
 
   // ── Server uptime ─────────────────────────────────────────────────────
   SERVER_UPTIME_ENABLE: c.serverUptime?.enable ?? false,
@@ -176,7 +176,7 @@ module.exports = {
   // ── Legacy / kept for compatibility ──────────────────────────────────
   AUTO_RECONNECT:         true,
   MAX_RECONNECT_ATTEMPTS: 5,
-  SESSION_SECRET:         process.env.SESSION_SECRET || 'default_session_secret',
+  SESSION_SECRET:         process.env.SESSION_SECRET || 'goatbot_ig_secret',
 
   // Raw config object (for ConfigManager dynamic reads)
   _raw: c

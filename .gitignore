@@ -1,42 +1,10 @@
-# Dependencies
 node_modules/
-package-lock.json
-yarn.lock
-
-# Logs
 logs/
-storage/logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Environment
+database/*.sqlite
+database/*.json
+!database/threads.json
+!database/global.json
 .env
-.env.local
-.env.*.local
-
-# Data
-data/
-storage/data/
-*.db
-*.sqlite
-
-# Session files
-account.txt
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Temporary files
-tmp/
-temp/
-*.tmp
+coverage/
+*.log
+/home/jules/verification/
