@@ -1,6 +1,4 @@
 const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
 
 const AR_MAP = {
   "1:1": "1024x1024",
@@ -64,9 +62,10 @@ module.exports = {
       const imageUrl = response.data?.data?.[0]?.url;
       if (!imageUrl) throw new Error("No image URL returned");
 
-      await api.sendPhotoFromUrl(event.threadId, imageUrl, {
-        caption: `Done - ${aspect_ratio}`
-      });
+      await api.sendMessage({
+        body: `Done - ${aspect_ratio}`,
+        attachment: imageUrl
+      }, event.threadId);
       await api.sendReaction("✅", event.messageId);
 
     } catch (error) {

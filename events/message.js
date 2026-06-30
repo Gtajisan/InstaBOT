@@ -77,11 +77,11 @@ module.exports = {
               const replyApi = new Proxy(api, {
                 get(target, prop) {
                   if (prop === 'sendMessage') {
-                    return async (text, threadID) => {
+                    return async (message, threadID) => {
                       try {
-                        return await target.replyToMessage(threadID, text, event.messageID);
+                        return await target.replyToMessage(threadID, message, event.messageID);
                       } catch (_) {
-                        return await target.sendMessage(text, threadID);
+                        return await target.sendMessage(message, threadID);
                       }
                     };
                   }
@@ -236,11 +236,11 @@ module.exports = {
         const replyApi = new Proxy(api, {
           get(target, prop) {
             if (prop === 'sendMessage') {
-              return async (text, threadID) => {
+              return async (message, threadID) => {
                 try {
-                  return await target.replyToMessage(threadID, text, event.messageID);
+                  return await target.replyToMessage(threadID, message, event.messageID);
                 } catch (_) {
-                  return await target.sendMessage(text, threadID);
+                  return await target.sendMessage(message, threadID);
                 }
               };
             }

@@ -336,13 +336,13 @@ class InstagramBot {
     const ig = this.ig;
 
     return {
-      sendMessage: async (text, threadID) => {
+      sendMessage: async (message, threadID) => {
         try {
           if (config.TYPING_INDICATOR) {
             ig.sendTypingIndicator(threadID);
             await this._sleep(config.TYPING_INDICATOR_DURATION);
           }
-          const result = await ig.sendMessage(text, threadID);
+          const result = await ig.sendMessage(message, threadID);
           if (result?.messageID) {
             const db = require('../utils/database');
             db.storeSentMessage(threadID, result.messageID);
@@ -354,9 +354,9 @@ class InstagramBot {
         }
       },
 
-      sendMessageToUser: async (text, userID) => {
+      sendMessageToUser: async (message, userID) => {
         try {
-          return await ig.sendDirectMessage(userID, text);
+          return await ig.sendDirectMessage(userID, message);
         } catch (error) {
           logger.error('Failed to send direct message', { error: error.message, userID });
           throw error;
@@ -498,9 +498,9 @@ class InstagramBot {
         }
       },
 
-      replyToMessage: async (threadID, text, replyToMessageID) => {
+      replyToMessage: async (threadID, message, replyToMessageID) => {
         try {
-          return await ig.replyToMessage(threadID, text, replyToMessageID);
+          return await ig.replyToMessage(threadID, message, replyToMessageID);
         } catch (error) {
           logger.error('Failed to reply to message', { error: error.message, threadID });
           throw error;

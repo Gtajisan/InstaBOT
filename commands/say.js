@@ -14,7 +14,7 @@ module.exports = {
     usage: "say [text] | [lang] or reply to a message"
   },
 
-  async run({ api, event, args, logger, config }) {
+  async run({ api, event, args, logger }) {
     let text;
     let lang = 'en';
 
@@ -58,15 +58,11 @@ module.exports = {
           writer.on("error", reject);
         });
 
-        await api.sendAudio(filePath, event.threadId);
+        await api.sendMessage({ attachment: filePath }, event.threadId);
         await fs.remove(filePath);
       } else {
         const chunkSize = 150;
         const chunks = text.match(new RegExp(`.{1,${chunkSize}}`, 'g'));
-
-        // For long text, we concatenate the audio files
-        // However, the source repo just appends to the same file which might not work well for MP3
-        // Actually, MP3 files can often be concatenated by just joining the buffers
 
         const writer = fs.createWriteStream(filePath);
 
@@ -86,7 +82,7 @@ module.exports = {
           writer.on("error", reject);
         });
 
-        await api.sendAudio(filePath, event.threadId);
+        await api.sendMessage({ attachment: filePath }, event.threadId);
         await fs.remove(filePath);
       }
     } catch (err) {

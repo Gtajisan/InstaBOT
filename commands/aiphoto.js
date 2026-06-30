@@ -36,9 +36,10 @@ module.exports = {
         return api.sendMessage("❌ Failed to generate image.", event.threadId);
       }
 
-      await api.sendPhotoFromUrl(event.threadId, resultUrl, {
-        caption: "Image generated 🐦"
-      });
+      await api.sendMessage({
+        body: "Image generated 🐦",
+        attachment: resultUrl
+      }, event.threadId);
       await api.sendReaction("✅", event.messageId);
 
     } catch (err) {
