@@ -6,31 +6,30 @@ const API_ENDPOINT = "https://neokex-img-api.vercel.app/generate";
 
 module.exports = {
   config: {
-    name: "imagen4",
-    aliases: ["img4", "gen4"],
+    name: "dalle3",
+    aliases: ["dalle"],
     version: "1.0",
     author: "NeoKEX",
     cooldown: 15,
     role: 0,
-    description: "Generate a high-quality image using the Imagen 4 model.",
+    description: "Generate an image using the DALL-E 3 model.",
     category: "ai-image",
-    usage: "imagen4 <prompt>"
+    usage: "dalle3 <prompt>"
   },
 
   async run({ api, event, args, logger }) {
     let prompt = args.join(" ");
-
     if (!prompt) {
-        return api.sendMessage("❌ Please provide a prompt to generate an image.", event.threadId);
+        return api.sendMessage("❌ Please provide a prompt.", event.threadId);
     }
 
     await api.sendReaction("🎨", event.messageId);
     const cacheDir = path.join(__dirname, 'cache');
     await fs.ensureDir(cacheDir);
-    const filePath = path.join(cacheDir, `imagen4_${event.messageId}.png`);
+    const filePath = path.join(cacheDir, `dalle3_${event.messageId}.png`);
 
     try {
-      const fullApiUrl = `${API_ENDPOINT}?prompt=${encodeURIComponent(prompt.trim())}&m=imagen4`;
+      const fullApiUrl = `${API_ENDPOINT}?prompt=${encodeURIComponent(prompt.trim())}&model=dalle3`;
 
       const response = await axios.get(fullApiUrl, {
           responseType: 'stream',
@@ -38,7 +37,7 @@ module.exports = {
       });
 
       if (response.status !== 200) {
-           throw new Error(`API returned status ${response.status}`);
+           throw new Error(`API error: ${response.status}`);
       }
 
       const writer = fs.createWriteStream(filePath);
@@ -50,16 +49,14 @@ module.exports = {
       });
 
       await api.sendPhoto(filePath, event.threadId, {
-        caption: "✨ Imagen 4 image Generated"
+        caption: "DALL-E 3 image generated 🐦"
       });
       await api.sendReaction("✅", event.messageId);
 
     } catch (error) {
-      logger.error('imagen4 error', { error: error.message });
+      logger.error('dalle3 error', { error: error.message });
       await api.sendReaction("❌", event.messageId);
-      let msg = "Failed to generate image.";
-      if (error.code === 'ECONNABORTED') msg = "The request timed out. The server is taking too long.";
-      api.sendMessage(`❌ ${msg}\nError: ${error.message}`, event.threadId);
+      api.sendMessage(`❌ Error: ${error.message}`, event.threadId);
     } finally {
       if (fs.existsSync(filePath)) await fs.remove(filePath);
     }
