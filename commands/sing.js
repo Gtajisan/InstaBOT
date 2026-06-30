@@ -4,33 +4,32 @@ const path = require("path");
 
 module.exports = {
   config: {
-    name: "ytb",
-    aliases: ["youtube", "yt"],
+    name: "sing",
+    aliases: ["song", "music"],
     version: "1.1",
     author: "Neoaz 🐊",
     cooldown: 5,
     role: 0,
-    description: "YouTube downloader (video/audio)",
+    description: "Search and download YouTube audio",
     category: "media",
-    usage: "ytb -a <query> or ytb -v <query>"
+    usage: "sing <song name>"
   },
 
   async run({ api, event, args, logger, commandName }) {
-    const type = args[0];
-    const query = args.slice(1).join(" ");
-
-    if (!["-a", "-v"].includes(type) || !query) {
-      return api.sendMessage(`❌ Usage: ${this.config.name} -a <query> or -v <query>`, event.threadId);
-    }
+    const query = args.join(" ");
+    if (!query) return api.sendMessage("❌ Please provide a song name.", event.threadId);
 
     try {
-      await api.sendReaction("⏳", event.messageId);
       const res = await axios.get(`https://neokex-dlapis.vercel.app/api/search?q=${encodeURIComponent(query)}`);
       const results = res.data.results.slice(0, 6);
 
-      if (results.length === 0) return api.sendMessage("❌ No results found.", event.threadId);
+      if (results.length === 0) return api.sendMessage("❌ No songs found.", event.threadId);
 
-      let msg = "🔎 YouTube Search Results:\n\n";
+      let msg = "🔎 Found the following results:\n\n";
+      const cacheDir = path.join(__dirname, 'cache');
+      await fs.ensureDir(cacheDir);
+
+      // We'll just send the text list for now as sending multiple thumbnails might be slow or hit limits
       for (let i = 0; i < results.length; i++) {
         msg += `${i + 1}. ${results[i].title}\n[${results[i].duration}]\n\n`;
       }
@@ -41,18 +40,17 @@ module.exports = {
       global.InstaBOT.onReply.set(info.messageId, {
         commandName,
         author: event.senderID,
-        results,
-        downloadType: type === "-a" ? "audio" : "video"
+        results
       });
 
     } catch (e) {
-      logger.error('ytb search error', { error: e.message });
+      logger.error('sing search error', { error: e.message });
       api.sendMessage("❌ Search error.", event.threadId);
     }
   },
 
   async handleReply({ api, event, replyData, logger }) {
-    const { results, author, downloadType } = replyData;
+    const { results, author } = replyData;
     if (event.senderID !== author) return;
 
     const choice = parseInt(event.body);
@@ -60,6 +58,7 @@ module.exports = {
 
     const selected = results[choice - 1];
 
+    // Attempt to unsend the selection message
     try {
         await api.unsendMessage(event.threadId, event.replyToItemId);
     } catch (e) {}
@@ -68,12 +67,11 @@ module.exports = {
 
     const cacheDir = path.join(__dirname, 'cache');
     await fs.ensureDir(cacheDir);
-    const ext = downloadType === "audio" ? "mp3" : "mp4";
-    const filePath = path.join(cacheDir, `yt_${event.messageId}.${ext}`);
+    const filePath = path.join(cacheDir, `sing_${Date.now()}.mp3`);
 
     try {
       const dlRes = await axios.get(`https://neokex-dlapis.vercel.app/api/alldl?url=${encodeURIComponent(selected.url)}`);
-      const pollUrl = dlRes.data[downloadType].downloadUrl;
+      const pollUrl = dlRes.data.audio.downloadUrl;
 
       let streamUrl = null;
       for (let i = 0; i < 60; i++) {
@@ -90,15 +88,11 @@ module.exports = {
       const fileRes = await axios.get(streamUrl, { responseType: "arraybuffer" });
       await fs.writeFile(filePath, Buffer.from(fileRes.data));
 
-      if (downloadType === "audio") {
-          await api.sendAudio(filePath, event.threadId);
-      } else {
-          await api.sendVideo(filePath, event.threadId);
-      }
-
+      await api.sendAudio(filePath, event.threadId);
       await api.sendReaction("✅", event.messageId);
+
     } catch (e) {
-      logger.error('ytb download error', { error: e.message });
+      logger.error('sing download error', { error: e.message });
       api.sendReaction("❌", event.messageId);
       api.sendMessage("❌ Download error.", event.threadId);
     } finally {

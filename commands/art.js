@@ -2,43 +2,43 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
 
-const API_ENDPOINT = "https://neokex-img-api.vercel.app/generate";
+const API_ENDPOINT = "https://dev.oculux.xyz/api/artv1";
 
 module.exports = {
   config: {
-    name: "imagen4",
-    aliases: ["img4", "gen4"],
+    name: "art",
+    aliases: ["artv1", "draw"],
     version: "1.0",
     author: "NeoKEX",
     cooldown: 15,
     role: 0,
-    description: "Generate a high-quality image using the Imagen 4 model.",
+    description: "Generate an image using the ArtV1 model.",
     category: "ai-image",
-    usage: "imagen4 <prompt>"
+    usage: "art <prompt>"
   },
 
   async run({ api, event, args, logger }) {
     let prompt = args.join(" ");
 
-    if (!prompt) {
-        return api.sendMessage("❌ Please provide a prompt to generate an image.", event.threadId);
+    if (!prompt || !/^[\x00-\x7F]*$/.test(prompt)) {
+        return api.sendMessage("❌ Please provide a valid English prompt to generate an image.", event.threadId);
     }
 
-    await api.sendReaction("🎨", event.messageId);
+    await api.sendReaction("⏳", event.messageId);
     const cacheDir = path.join(__dirname, 'cache');
     await fs.ensureDir(cacheDir);
-    const filePath = path.join(cacheDir, `imagen4_${event.messageId}.png`);
+    const filePath = path.join(cacheDir, `artv1_${event.messageId}.png`);
 
     try {
-      const fullApiUrl = `${API_ENDPOINT}?prompt=${encodeURIComponent(prompt.trim())}&m=imagen4`;
+      const fullApiUrl = `${API_ENDPOINT}?p=${encodeURIComponent(prompt.trim())}`;
 
       const response = await axios.get(fullApiUrl, {
           responseType: 'stream',
-          timeout: 60000
+          timeout: 45000
       });
 
       if (response.status !== 200) {
-           throw new Error(`API returned status ${response.status}`);
+           throw new Error(`API request failed with status code ${response.status}.`);
       }
 
       const writer = fs.createWriteStream(filePath);
@@ -50,16 +50,14 @@ module.exports = {
       });
 
       await api.sendPhoto(filePath, event.threadId, {
-        caption: "✨ Imagen 4 image Generated"
+        caption: "ArtV1 image generated ✨"
       });
       await api.sendReaction("✅", event.messageId);
 
     } catch (error) {
-      logger.error('imagen4 error', { error: error.message });
+      logger.error('art error', { error: error.message });
       await api.sendReaction("❌", event.messageId);
-      let msg = "Failed to generate image.";
-      if (error.code === 'ECONNABORTED') msg = "The request timed out. The server is taking too long.";
-      api.sendMessage(`❌ ${msg}\nError: ${error.message}`, event.threadId);
+      api.sendMessage("❌ Error while generating image.", event.threadId);
     } finally {
       if (fs.existsSync(filePath)) await fs.remove(filePath);
     }
